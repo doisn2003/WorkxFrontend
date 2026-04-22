@@ -16,7 +16,7 @@ export function AppLayout() {
   return (
     <div className="flex flex-col h-screen w-screen bg-surface text-on-surface overflow-hidden">
       <TopBar />
-      <div className="flex flex-1 pt-16 h-full overflow-hidden">
+      <div className="flex flex-1 h-full overflow-hidden relative">
         <Sidebar />
         <main className="flex-grow flex flex-col bg-white h-full overflow-hidden relative min-w-0">
           <Outlet />

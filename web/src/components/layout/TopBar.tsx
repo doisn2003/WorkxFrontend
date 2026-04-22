@@ -18,7 +18,7 @@ export function TopBar() {
   const roleName = user?.role?.name ?? 'member';
 
   return (
-    <header className="bg-white/70 backdrop-blur-3xl shadow-ambient h-16 flex justify-between items-center w-full px-8 fixed top-0 z-50">
+    <header className="bg-white/70 backdrop-blur-3xl shadow-ambient h-16 flex justify-between items-center w-full px-8 shrink-0 relative z-50">
       {/* Left: Logo + Search */}
       <div className="flex items-center gap-8 w-1/3">
         <span className="text-xl font-black text-zinc-900 tracking-tighter uppercase select-none cursor-default">
