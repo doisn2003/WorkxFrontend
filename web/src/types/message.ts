@@ -8,7 +8,11 @@ export interface Message {
   deleted_at?: string;
   created_at: string;
   updated_at: string;
-  // Joined fields
+  // Flat sender fields from API
+  sender_first_name?: string;
+  sender_family_name?: string;
+  sender_avatar?: string | null;
+  // Nested sender (for future / normalized usage)
   sender?: {
     id: string;
     first_name: string;
