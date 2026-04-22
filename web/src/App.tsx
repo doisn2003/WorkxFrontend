@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthGuard } from '@/components/common/AuthGuard';
 import { LoginPage } from '@/pages/LoginPage';
 import { ChatPage } from '@/pages/ChatPage';
+import { AppLayout } from '@/layouts/AppLayout';
 
 function App() {
   return (
@@ -10,10 +11,12 @@ function App() {
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Protected routes */}
+        {/* Protected routes — wrapped in AppLayout */}
         <Route element={<AuthGuard />}>
-          <Route path="/" element={<ChatPage />} />
-          {/* Future: /chat/:channelId, /admin, etc. */}
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<ChatPage />} />
+            {/* Future: /chat/:channelId, /projects/:id, /admin, etc. */}
+          </Route>
         </Route>
 
         {/* Fallback */}

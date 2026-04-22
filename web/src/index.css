@@ -64,12 +64,6 @@
   --color-success: #16a34a;
   --color-warning: #eab308;
 
-  /* ---- Border Radius ---- */
-  --radius-DEFAULT: 0.125rem;
-  --radius-lg: 0.25rem;
-  --radius-xl: 0.5rem;
-  --radius-full: 0.75rem;
-
   /* ---- Font Family ---- */
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-headline: "Inter", sans-serif;
@@ -147,7 +141,7 @@ body {
    ============================================ */
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -177,4 +171,25 @@ body {
 
 .shadow-float {
   box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================
+   FOCUS & ACCESSIBILITY
+   ============================================ */
+
+/* Ghost focus ring for buttons */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.1);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   SMOOTH TRANSITIONS — global
+   ============================================ */
+a, button {
+  transition-property: color, background-color, opacity, transform, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
