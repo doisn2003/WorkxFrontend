@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { MessageBubble } from './MessageBubble';
 import { useMessageStore } from '@/stores/messageStore';
 import { useAuthStore } from '@/stores/authStore';
+import { useChannelStore } from '@/stores/channelStore';
 import { messageService } from '@/services/messageService';
 import { Icon } from '@/components/common/Icon';
 
@@ -77,7 +78,7 @@ export function MessageList({ channelId }: MessageListProps) {
   const handleReactionToggle = useCallback(
     async (messageId: number, emoji: string) => {
       try {
-        await messageService.toggleReaction(channelId, messageId, emoji);
+        await messageService.toggleReaction(messageId, emoji);
       } catch (err) {
         console.error('Reaction toggle failed:', err);
       }
@@ -85,23 +86,66 @@ export function MessageList({ channelId }: MessageListProps) {
     [channelId],
   );
 
+  const lastSelfMessageIndex = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].sender_id === currentUserId) return i;
+    }
+    return -1;
+  }, [messages, currentUserId]);
+
+  const channel = useChannelStore((s) => s.channels.find((c) => c.id === channelId));
+  const maxOtherReadId = channel?.max_other_read_id || 0;
+
+  const lastMarkedReadIdRef = useRef<number>(0);
+
+  // Automatically mark the last incoming message as read when it appears
+  useEffect(() => {
+    const lastIncomingMessage = [...messages].reverse().find((m) => m.sender_id !== currentUserId);
+    if (
+      lastIncomingMessage &&
+      lastIncomingMessage.id > 0 &&
+      lastIncomingMessage.id > lastMarkedReadIdRef.current
+    ) {
+      lastMarkedReadIdRef.current = lastIncomingMessage.id;
+      messageService.markAsRead(lastIncomingMessage.id).catch(console.error);
+    }
+  }, [messages, currentUserId]);
+
   const messageElements = useMemo(
     () =>
-      messages.map((msg) => (
-        <MessageBubble
-          key={msg._tempId ?? msg.id}
-          message={msg}
-          isSelf={msg.sender_id === currentUserId}
-          onReactionToggle={handleReactionToggle}
-        />
-      )),
-    [messages, currentUserId, handleReactionToggle],
+      messages.map((msg, index) => {
+        let hideHeader = false;
+        if (index > 0) {
+          const prevMsg = messages[index - 1];
+          if (prevMsg.sender_id === msg.sender_id) {
+            const prevTime = new Date(prevMsg.created_at).getTime();
+            const currTime = new Date(msg.created_at).getTime();
+            const diffMinutes = (currTime - prevTime) / (1000 * 60);
+            if (diffMinutes <= 5) {
+              hideHeader = true;
+            }
+          }
+        }
+        return (
+          <div key={msg._tempId ?? msg.id} className={index === 0 ? '' : (hideHeader ? 'mt-2' : 'mt-8')}>
+            <MessageBubble
+              message={msg}
+              isSelf={msg.sender_id === currentUserId}
+              onReactionToggle={handleReactionToggle}
+              hideHeader={hideHeader}
+              isLastSelfMessage={index === lastSelfMessageIndex}
+              isRead={msg.id <= maxOtherReadId}
+            />
+          </div>
+        );
+      }),
+    [messages, currentUserId, handleReactionToggle, lastSelfMessageIndex, maxOtherReadId],
   );
 
   return (
     <div
       ref={containerRef}
-      className="flex-grow overflow-y-auto px-8 pt-6 pb-36 space-y-8 no-scrollbar"
+      className="flex-grow overflow-y-auto px-8 pt-6 pb-36 no-scrollbar"
     >
       {/* Top sentinel for infinite scroll */}
       <div ref={topSentinelRef} className="h-1" />

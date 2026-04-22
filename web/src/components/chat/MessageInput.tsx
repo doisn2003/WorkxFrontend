@@ -56,7 +56,7 @@ export function MessageInput({ channelId, channelName, userNameMap = {} }: Messa
     ? `Nhập tin nhắn tới #${channelName}...`
     : 'Nhập tin nhắn...';
 
-  const messages = useMessageStore((s) => s.messagesByChannel[channelId] || []);
+  const messages = useMessageStore((s) => s.messagesByChannel[channelId]) || [];
   
   // Extract user names from loaded messages
   const extractedUserNameMap = useMemo(() => {

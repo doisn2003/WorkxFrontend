@@ -62,6 +62,13 @@ export function useSocket() {
         .removeMessage(data.channel_id, data.message_id);
     });
 
+    socket.on('message:read', (data: { channel_id: string; message_id: number; user_id: string }) => {
+      const currentUserId = useAuthStore.getState().user?.id;
+      if (data.user_id !== currentUserId) {
+        useChannelStore.getState().updateChannelMaxOtherReadId(data.channel_id, data.message_id);
+      }
+    });
+
     // ─── Presence Events ────────────────────────
     socket.on('presence:changed', (data: { user_id: string; status: PresenceStatus }) => {
       usePresenceStore.getState().setStatus(data.user_id, data.status);

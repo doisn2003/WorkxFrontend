@@ -7,6 +7,7 @@ import { MessageInput } from '@/components/chat/MessageInput';
 import { Icon } from '@/components/common/Icon';
 import { useChannelStore } from '@/stores/channelStore';
 import { useMessageStore } from '@/stores/messageStore';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 /**
  * ChatPage — displays channel chat or empty state.
@@ -59,13 +60,15 @@ export function ChatPage() {
 
   // Channel selected — show full chat UI
   return (
-    <div className="flex flex-col h-full relative">
-      {activeChannel && <ChannelHeader channel={activeChannel} />}
-      {activeChannel?.type === 'PUBLIC' && (
-        <PinnedBanner text="Kênh này dành cho các thông báo toàn công ty và thảo luận chung về nơi làm việc. Vui lòng giữ thái độ chuyên nghiệp." />
-      )}
-      <MessageList channelId={channelId} />
-      <MessageInput channelId={channelId} channelName={activeChannel?.name} />
-    </div>
+    <ErrorBoundary>
+      <div className="flex flex-col h-full relative">
+        {activeChannel && <ChannelHeader channel={activeChannel} />}
+        {activeChannel?.type === 'PUBLIC' && (
+          <PinnedBanner text="Kênh này dành cho các thông báo toàn công ty và thảo luận chung về nơi làm việc. Vui lòng giữ thái độ chuyên nghiệp." />
+        )}
+        <MessageList channelId={channelId} />
+        <MessageInput channelId={channelId} channelName={activeChannel?.name} />
+      </div>
+    </ErrorBoundary>
   );
 }

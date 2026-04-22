@@ -10,6 +10,9 @@ interface MessageBubbleProps {
   message: Message;
   isSelf: boolean;
   onReactionToggle?: (messageId: number, emoji: string) => void;
+  hideHeader?: boolean;
+  isLastSelfMessage?: boolean;
+  isRead?: boolean;
 }
 
 /**
@@ -17,7 +20,7 @@ interface MessageBubbleProps {
  * Self messages: flex-row-reverse, dark bg, rounded-tr-sm.
  * Others: flex-row, light bg.
  */
-export function MessageBubble({ message, isSelf, onReactionToggle }: MessageBubbleProps) {
+export function MessageBubble({ message, isSelf, onReactionToggle, hideHeader, isLastSelfMessage, isRead }: MessageBubbleProps) {
   const senderName = message.sender_first_name
     ? `${message.sender_family_name ?? ''} ${message.sender_first_name}`.trim()
     : message.sender?.family_and_middle_name
@@ -38,11 +41,15 @@ export function MessageBubble({ message, isSelf, onReactionToggle }: MessageBubb
       )}
     >
       {/* Avatar */}
-      <Avatar
-        src={avatarUrl}
-        name={message.sender_first_name ?? senderName}
-        className="mt-1 flex-shrink-0"
-      />
+      {!hideHeader ? (
+        <Avatar
+          src={avatarUrl}
+          name={message.sender_first_name ?? senderName}
+          className="mt-1 flex-shrink-0"
+        />
+      ) : (
+        <div className="w-10 h-10 flex-shrink-0" />
+      )}
 
       {/* Content */}
       <div
@@ -52,36 +59,29 @@ export function MessageBubble({ message, isSelf, onReactionToggle }: MessageBubb
         )}
       >
         {/* Name + Time */}
-        <div className={cn('flex items-center gap-3', isSelf && 'flex-row-reverse')}>
-          <span className="text-sm font-bold text-zinc-900">{senderName}</span>
-          <span className="text-[10px] text-zinc-400 font-medium">{time}</span>
-        </div>
+        {!hideHeader && (
+          <div className={cn('flex items-center gap-3', isSelf && 'flex-row-reverse')}>
+            <span className="text-sm font-bold text-zinc-900">{senderName}</span>
+            <span className="text-[10px] text-zinc-400 font-medium">{time}</span>
+          </div>
+        )}
 
         {/* Message body */}
-        {isSelf ? (
-          <div className="bg-zinc-900 text-white p-3 rounded-2xl rounded-tr-sm shadow-sm">
-            <p className="text-[0.875rem] leading-relaxed">{message.content}</p>
-          </div>
-        ) : (
-          <>
-            {/* Attachments (rendered inside file card for others) */}
-            {message.attachments && message.attachments.length > 0 ? (
-              <div className="space-y-2">
-                {message.attachments.map((att) => (
-                  <AttachmentPreview key={att.id} attachment={att} />
-                ))}
-                {message.content && (
-                  <p className="text-[0.875rem] text-zinc-700 leading-relaxed px-4">
-                    {message.content}
-                  </p>
-                )}
-              </div>
-            ) : (
-              <p className="text-[0.875rem] text-zinc-700 leading-relaxed">
+        {message.attachments && message.attachments.length > 0 ? (
+          <div className={cn('space-y-2', isSelf && 'flex flex-col items-end')}>
+            {message.attachments.map((att) => (
+              <AttachmentPreview key={att.id} attachment={att} />
+            ))}
+            {message.content && (
+              <p className={cn("text-[0.875rem] text-zinc-700 leading-relaxed px-4", isSelf && "text-right")}>
                 {message.content}
               </p>
             )}
-          </>
+          </div>
+        ) : (
+          <p className={cn("text-[0.875rem] text-zinc-700 leading-relaxed", isSelf && "text-right")}>
+            {message.content}
+          </p>
         )}
 
         {/* Reactions */}
@@ -93,7 +93,7 @@ export function MessageBubble({ message, isSelf, onReactionToggle }: MessageBubb
         )}
 
         {/* Read receipt for self messages */}
-        {isSelf && !isPending && !isFailed && <ReadReceipt />}
+        {isSelf && isLastSelfMessage && !isPending && !isFailed && <ReadReceipt isRead={isRead} />}
 
         {/* Failed indicator */}
         {isFailed && (
