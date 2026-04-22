@@ -6,7 +6,7 @@ import { useTypingIndicator } from '@/hooks/useTypingIndicator';
 import { TypingIndicator } from './TypingIndicator';
 import { getSocket } from '@/services/socket';
 import { cn } from '@/utils/cn';
-import type { EmojiClickData } from 'emoji-picker-react';
+import { EmojiStyle, type EmojiClickData } from 'emoji-picker-react';
 
 // Lazy load the heavy emoji picker for better performance
 const EmojiPicker = lazy(() => import('emoji-picker-react'));
@@ -310,6 +310,7 @@ export function MessageInput({ channelId, channelName, userNameMap = {} }: Messa
                 height={400}
                 searchPlaceHolder="Tìm emoji..."
                 previewConfig={{ showPreview: false }}
+                emojiStyle={EmojiStyle.APPLE}
               />
             </Suspense>
           </div>

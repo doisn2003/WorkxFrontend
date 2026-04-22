@@ -1,17 +1,25 @@
 import React from 'react';
+import { Emoji, EmojiStyle } from 'emoji-picker-react';
 
 /**
- * Parse Markdown-style formatting into React elements.
+ * Helper to convert a native emoji character to its unified hex string.
+ * e.g., 😀 -> 1f600
+ */
+function charToUnified(char: string): string {
+  return Array.from(char)
+    .map((c) => c.codePointAt(0)!.toString(16))
+    .join('-');
+}
+
+/**
+ * Parse Markdown-style formatting and Emojis into React elements.
  * Supports:
  *   **bold**  → <strong>
  *   *italic*  → <em>
  *   __underline__ → <u>
- *
- * Handles newlines as <br />.
- * Returns an array of React nodes.
+ *   Emojis    → <Emoji /> (Apple style)
  */
 export function parseFormattedText(text: string): React.ReactNode[] {
-  // Split by newlines first, then parse inline formatting on each line
   const lines = text.split('\n');
   const result: React.ReactNode[] = [];
 
@@ -26,13 +34,15 @@ export function parseFormattedText(text: string): React.ReactNode[] {
 }
 
 /**
- * Parse inline formatting for a single line of text.
- * Order of matching: bold (**), underline (__), italic (*).
+ * Parse inline formatting and emojis for a single line of text.
  */
 function parseInline(text: string, lineKey: number): React.ReactNode[] {
-  // Regex matches **bold**, __underline__, *italic* in order.
-  // Bold before italic to avoid conflict with single *.
-  const regex = /(\*\*(.+?)\*\*)|(__(.+?)__)|(\*(.+?)\*)/g;
+  // Regex matches:
+  // 1-2: **bold**
+  // 3-4: __underline__
+  // 5-6: *italic*
+  // 7:   Emoji characters (using unicode property escapes)
+  const regex = /(\*\*(.+?)\*\*)|(__(.+?)__)|(\*(.+?)\*)|(\p{Emoji_Presentation}|\p{Emoji}\uFE0F)/gu;
 
   const result: React.ReactNode[] = [];
   let lastIndex = 0;
@@ -56,6 +66,14 @@ function parseInline(text: string, lineKey: number): React.ReactNode[] {
     } else if (match[5]) {
       // Italic: *text*
       result.push(<em key={key}>{match[6]}</em>);
+    } else if (match[7]) {
+      // Emoji character
+      const unified = charToUnified(match[7]);
+      result.push(
+        <span key={key} className="inline-block align-middle mx-px transform translate-y-[-1px]">
+          <Emoji unified={unified} emojiStyle={EmojiStyle.APPLE} size={20} />
+        </span>
+      );
     }
 
     lastIndex = match.index + match[0].length;
