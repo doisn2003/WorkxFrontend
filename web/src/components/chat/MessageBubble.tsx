@@ -3,6 +3,7 @@ import { AttachmentPreview } from './AttachmentPreview';
 import { ReactionBar } from './ReactionBar';
 import { ReadReceipt } from './ReadReceipt';
 import { formatMessageTime } from '@/utils/formatDate';
+import { parseFormattedText } from '@/utils/parseFormattedText';
 import { cn } from '@/utils/cn';
 import type { Message } from '@/types';
 
@@ -74,13 +75,13 @@ export function MessageBubble({ message, isSelf, onReactionToggle, hideHeader, i
             ))}
             {message.content && (
               <p className={cn("text-[0.875rem] text-zinc-700 leading-relaxed px-4", isSelf && "text-right")}>
-                {message.content}
+                {parseFormattedText(message.content)}
               </p>
             )}
           </div>
         ) : (
           <p className={cn("text-[0.875rem] text-zinc-700 leading-relaxed", isSelf && "text-right")}>
-            {message.content}
+            {parseFormattedText(message.content)}
           </p>
         )}
 

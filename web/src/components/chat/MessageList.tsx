@@ -145,7 +145,7 @@ export function MessageList({ channelId }: MessageListProps) {
   return (
     <div
       ref={containerRef}
-      className="flex-grow overflow-y-auto px-8 pt-6 pb-36 no-scrollbar"
+      className="flex-grow overflow-y-auto px-8 pt-6 pb-44 no-scrollbar"
     >
       {/* Top sentinel for infinite scroll */}
       <div ref={topSentinelRef} className="h-1" />
