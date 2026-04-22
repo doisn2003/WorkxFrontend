@@ -1,51 +1,39 @@
-import { useAuthStore } from '@/stores/authStore';
-import { ROLE_LABELS } from '@/utils/constants';
+import { Icon } from '@/components/common/Icon';
 
 /**
- * Placeholder ChatPage — will be replaced in Phase 2 with full layout.
+ * ChatPage — placeholder for Phase 3.
+ * Sits inside AppLayout's <main> area.
+ * Shows a gentle welcome prompt matching Digital Atrium aesthetic.
  */
 export function ChatPage() {
-  const { user, logout } = useAuthStore();
-
-  if (!user) return null;
-
-  const fullName = `${user.family_and_middle_name} ${user.first_name}`;
-  const roleName = user.role?.name ?? 'member';
-
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-surface gap-6">
-      {/* Avatar */}
-      <div className="w-20 h-20 rounded-full bg-surface-container-high flex items-center justify-center text-2xl font-bold text-on-surface">
-        {user.first_name.charAt(0).toUpperCase()}
+    <div className="flex-grow flex flex-col items-center justify-center gap-5 text-center px-8">
+      {/* Icon container */}
+      <div className="w-20 h-20 rounded-2xl bg-zinc-50 flex items-center justify-center shadow-ambient-md">
+        <Icon name="forum" size={36} className="text-zinc-300" />
       </div>
 
-      {/* Welcome */}
-      <div className="text-center">
-        <h1 className="text-2xl font-black tracking-tight text-on-surface">
-          Xin chào, {user.first_name}!
-        </h1>
-        <p className="text-sm text-on-surface-variant mt-1">
-          {fullName} — {ROLE_LABELS[roleName] ?? roleName}
-        </p>
-        <p className="text-xs text-on-surface-variant/60 mt-1">{user.email}</p>
-      </div>
-
-      {/* Info card */}
-      <div className="bg-surface-container-lowest rounded-2xl p-6 shadow-ambient-md max-w-sm w-full mx-4">
-        <p className="text-sm text-on-surface-variant text-center leading-relaxed">
-          Giao diện chính đang được phát triển.<br />
-          Hệ thống đã xác thực thành công! 🎉
+      {/* Text */}
+      <div className="max-w-xs">
+        <h2 className="text-xl font-black text-zinc-900 tracking-tight">
+          Chọn một cuộc trò chuyện
+        </h2>
+        <p className="text-sm text-zinc-400 mt-2 leading-relaxed">
+          Chọn một kênh hoặc tin nhắn từ thanh bên trái để bắt đầu trò chuyện
         </p>
       </div>
 
-      {/* Logout button */}
-      <button
-        onClick={logout}
-        className="text-sm text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-surface-container-low"
-      >
-        <span className="material-symbols-outlined text-[18px]">logout</span>
-        Đăng xuất
-      </button>
+      {/* Hint chips */}
+      <div className="flex items-center gap-3 mt-4">
+        <div className="flex items-center gap-2 bg-zinc-50 px-4 py-2 rounded-full text-xs text-zinc-500">
+          <Icon name="tag" size={14} />
+          <span>Kênh dự án</span>
+        </div>
+        <div className="flex items-center gap-2 bg-zinc-50 px-4 py-2 rounded-full text-xs text-zinc-500">
+          <Icon name="chat_bubble" size={14} />
+          <span>Tin nhắn riêng</span>
+        </div>
+      </div>
     </div>
   );
 }
