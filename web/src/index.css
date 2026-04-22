@@ -1,67 +1,149 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700&display=swap');
+@import "tailwindcss";
 
-:root {
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --bg-main: #0f172a;
-  --bg-sidebar: #1e293b;
-  --bg-accent: #334155;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border: #334155;
-  --glass: rgba(30, 41, 59, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --success: #10b981;
+/* ============================================
+   WORKX — "Digital Atrium" Design System
+   ============================================ */
 
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@theme {
+  /* ---- Color Tokens (from code.html) ---- */
+  --color-primary: #000000;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #1b1b1b;
+  --color-on-primary-container: #848484;
+  --color-primary-fixed: #e2e2e2;
+  --color-primary-fixed-dim: #c6c6c6;
+  --color-on-primary-fixed: #1b1b1b;
+  --color-on-primary-fixed-variant: #474747;
 
-  color-scheme: dark;
-  background-color: var(--bg-main);
-  color: var(--text-main);
+  --color-secondary: #5e5e5e;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #e2e2e2;
+  --color-on-secondary-container: #646464;
+  --color-secondary-fixed: #e2e2e2;
+  --color-secondary-fixed-dim: #c6c6c6;
+  --color-on-secondary-fixed: #1b1b1b;
+  --color-on-secondary-fixed-variant: #474747;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --color-tertiary: #000000;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #1b1b1b;
+  --color-on-tertiary-container: #848484;
+  --color-tertiary-fixed: #e2e2e2;
+  --color-tertiary-fixed-dim: #c6c6c6;
+  --color-on-tertiary-fixed: #1b1b1b;
+  --color-on-tertiary-fixed-variant: #474747;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --color-surface: #f9f9f9;
+  --color-on-surface: #1b1b1b;
+  --color-surface-dim: #dadada;
+  --color-surface-bright: #f9f9f9;
+  --color-surface-variant: #e2e2e2;
+  --color-on-surface-variant: #4c4546;
+  --color-surface-tint: #5e5e5e;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f3f3;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e8e8e8;
+  --color-surface-container-highest: #e2e2e2;
+
+  --color-on-background: #1b1b1b;
+  --color-background: #f9f9f9;
+  --color-outline: #7e7576;
+  --color-outline-variant: #cfc4c5;
+
+  --color-inverse-surface: #303030;
+  --color-inverse-on-surface: #f1f1f1;
+  --color-inverse-primary: #c6c6c6;
+
+  /* ---- Semantic Colors ---- */
+  --color-success: #16a34a;
+  --color-warning: #eab308;
+
+  /* ---- Font Family ---- */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-headline: "Inter", sans-serif;
+  --font-display: "Inter", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Inter", sans-serif;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    font-weight: 400;
+    color-scheme: light;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+  }
+
+  #root {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+  }
 }
 
-body {
-  min-height: 100vh;
-  overflow: hidden;
+/* ============================================
+   CUSTOM UTILITIES
+   ============================================ */
+
+/* Glass Panel — for modals & floating elements */
+.glass-panel {
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
-h1,
-h2,
-h3,
-h4 {
-  font-family: 'Outfit', sans-serif;
+/* Primary Gradient — for CTA buttons */
+.primary-gradient {
+  background: linear-gradient(135deg, #777777 0%, #474747 100%);
 }
 
-#root {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
+/* No Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* Glassmorphism Utilities */
-.glass {
-  background: var(--glass);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+/* Material Symbols config */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
 }
 
-/* Custom Scrollbar */
+/* ============================================
+   CUSTOM SCROLLBAR (for elements that need it)
+   ============================================ */
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -69,10 +151,47 @@ h4 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-accent);
+  background: var(--color-surface-container-high);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: var(--color-outline);
+}
+
+/* ============================================
+   AMBIENT SHADOW UTILITIES
+   ============================================ */
+
+.shadow-ambient {
+  box-shadow: 0 32px 64px -4px rgba(0, 0, 0, 0.04);
+}
+
+.shadow-ambient-md {
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-float {
+  box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================
+   FOCUS & ACCESSIBILITY
+   ============================================ */
+
+/* Ghost focus ring for buttons */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.1);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   SMOOTH TRANSITIONS — global
+   ============================================ */
+a, button {
+  transition-property: color, background-color, opacity, transform, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
