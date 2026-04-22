@@ -14,8 +14,9 @@ function App() {
         {/* Protected routes — wrapped in AppLayout */}
         <Route element={<AuthGuard />}>
           <Route element={<AppLayout />}>
-            <Route path="/" element={<ChatPage />} />
-            {/* Future: /chat/:channelId, /projects/:id, /admin, etc. */}
+            <Route path="/" element={<Navigate to="/chat" replace />} />
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/chat/:channelId" element={<ChatPage />} />
           </Route>
         </Route>
 
