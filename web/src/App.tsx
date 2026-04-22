@@ -12,13 +12,13 @@ function App() {
         <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center mb-10 shadow-lg shadow-indigo-500/20">
           <MessageSquare className="text-white" size={24} />
         </div>
-        
+
         <nav className="flex flex-col gap-6">
           <NavIcon icon={<MessageSquare size={22} />} active={activeTab === 'chats'} onClick={() => setActiveTab('chats')} />
           <NavIcon icon={<Users size={22} />} active={activeTab === 'users'} onClick={() => setActiveTab('users')} />
           <NavIcon icon={<Settings size={22} />} active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
         </nav>
-        
+
         <div className="mt-auto">
           <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 overflow-hidden">
             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="avatar" />
@@ -35,12 +35,12 @@ function App() {
               <Plus size={20} />
             </button>
           </div>
-          
+
           <div className="relative group">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search messages..." 
+            <input
+              type="text"
+              placeholder="Search messages..."
               className="w-full bg-slate-900/50 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all"
             />
           </div>
@@ -89,9 +89,9 @@ function App() {
         {/* Input Area */}
         <div className="p-6">
           <div className="max-w-4xl mx-auto flex items-center gap-4 bg-slate-900/50 border border-slate-800 rounded-2xl p-2 pl-4 focus-within:border-indigo-500/50 transition-all">
-            <input 
-              type="text" 
-              placeholder="Type a message..." 
+            <input
+              type="text"
+              placeholder="Type a message..."
               className="flex-1 bg-transparent border-none focus:outline-none text-sm py-2"
             />
             <button className="bg-indigo-600 text-white p-2.5 rounded-xl hover:bg-indigo-500 transition-colors shadow-lg shadow-indigo-500/20">
@@ -106,15 +106,14 @@ function App() {
 
 function NavIcon({ icon, active, onClick }: { icon: React.ReactNode, active?: boolean, onClick: () => void }) {
   return (
-    <button 
+    <button
       onClick={onClick}
-      className={`p-3 rounded-xl transition-all duration-300 relative group ${
-        active ? 'bg-indigo-600/10 text-indigo-500' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
-      }`}
+      className={`p-3 rounded-xl transition-all duration-300 relative group ${active ? 'bg-indigo-600/10 text-indigo-500' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+        }`}
     >
       {icon}
       {active && (
-        <motion.div 
+        <motion.div
           layoutId="nav-pill"
           className="absolute -left-[33px] w-1 h-8 bg-indigo-500 rounded-r-full"
         />
@@ -125,9 +124,8 @@ function NavIcon({ icon, active, onClick }: { icon: React.ReactNode, active?: bo
 
 function ChatItem({ name, message, time, unread, active }: { name: string, message: string, time: string, unread: number, active?: boolean }) {
   return (
-    <div className={`p-4 rounded-2xl cursor-pointer transition-all duration-200 group ${
-      active ? 'bg-indigo-600/10 border border-indigo-500/20' : 'hover:bg-slate-800/30 border border-transparent'
-    }`}>
+    <div className={`p-4 rounded-2xl cursor-pointer transition-all duration-200 group ${active ? 'bg-indigo-600/10 border border-indigo-500/20' : 'hover:bg-slate-800/30 border border-transparent'
+      }`}>
       <div className="flex gap-3">
         <div className="w-12 h-12 rounded-full bg-slate-800 flex-shrink-0 overflow-hidden">
           <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`} alt={name} />
@@ -153,17 +151,16 @@ function ChatItem({ name, message, time, unread, active }: { name: string, messa
 
 function Message({ text, sent, time }: { text: string, sent: boolean, time: string }) {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={`flex ${sent ? 'justify-end' : 'justify-start'}`}
     >
       <div className={`max-w-[70%] group`}>
-        <div className={`p-4 rounded-2xl text-sm shadow-sm ${
-          sent 
-            ? 'bg-indigo-600 text-white rounded-tr-none' 
+        <div className={`p-4 rounded-2xl text-sm shadow-sm ${sent
+            ? 'bg-indigo-600 text-white rounded-tr-none'
             : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700/50'
-        }`}>
+          }`}>
           {text}
         </div>
         <p className={`text-[10px] mt-1 text-slate-500 ${sent ? 'text-right' : 'text-left'}`}>
