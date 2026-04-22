@@ -2,7 +2,6 @@ import { Icon } from '@/components/common/Icon';
 import { Avatar } from '@/components/common/Avatar';
 import { useAuthStore } from '@/stores/authStore';
 import { useUiStore } from '@/stores/uiStore';
-import { ROLE_LABELS } from '@/utils/constants';
 
 /**
  * TopBar — pixel-perfect match to code.html lines 91-121.
@@ -15,8 +14,6 @@ export function TopBar() {
   const fullName = user
     ? `${user.family_and_middle_name} ${user.first_name}`.trim()
     : '';
-  const roleName = user?.role?.name ?? 'member';
-
   return (
     <header className="bg-white/70 backdrop-blur-3xl shadow-ambient h-16 flex justify-between items-center w-full px-8 shrink-0 relative z-50">
       {/* Left: Logo + Search */}
@@ -63,9 +60,6 @@ export function TopBar() {
           <div className="flex items-center gap-3 pl-4 border-l border-zinc-100">
             <div className="text-right hidden md:block">
               <p className="text-xs font-bold text-zinc-900 leading-tight">{fullName}</p>
-              <p className="text-[10px] text-zinc-400">
-                {ROLE_LABELS[roleName] ?? roleName}
-              </p>
             </div>
             <Avatar
               src={user.avatar_url}

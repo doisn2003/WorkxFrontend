@@ -4,6 +4,7 @@ import { useMessageStore } from '@/stores/messageStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useTypingIndicator } from '@/hooks/useTypingIndicator';
 import { TypingIndicator } from './TypingIndicator';
+import { getSocket } from '@/services/socket';
 
 interface MessageInputProps {
   channelId: string;
@@ -31,6 +32,12 @@ export function MessageInput({ channelId, channelName, userNameMap = {} }: Messa
     useMessageStore.getState().sendMessage(channelId, content, userId);
     setText('');
     inputRef.current?.focus();
+    
+    // Clear typing status immediately after sending
+    const socket = getSocket();
+    if (socket) {
+      socket.emit('typing:stop', { channel_id: channelId });
+    }
   }, [text, channelId, userId]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,10 +56,29 @@ export function MessageInput({ channelId, channelName, userNameMap = {} }: Messa
     ? `Nhập tin nhắn tới #${channelName}...`
     : 'Nhập tin nhắn...';
 
+  const messages = useMessageStore((s) => s.messagesByChannel[channelId] || []);
+  
+  // Extract user names from loaded messages
+  const extractedUserNameMap = useMemo(() => {
+    const map = { ...userNameMap };
+    messages.forEach((m) => {
+      if (!map[m.sender_id]) {
+        if (m.sender_first_name) {
+          map[m.sender_id] = m.sender_family_name 
+            ? `${m.sender_family_name} ${m.sender_first_name}`.trim() 
+            : m.sender_first_name;
+        } else if (m.sender) {
+          map[m.sender_id] = `${m.sender.family_and_middle_name} ${m.sender.first_name}`.trim();
+        }
+      }
+    });
+    return map;
+  }, [messages, userNameMap]);
+
   // Resolve typing user IDs to display names
   const typingUserNames = useMemo(
-    () => typingUserIds.map((id) => userNameMap[id] ?? 'Ai đó'),
-    [typingUserIds, userNameMap],
+    () => typingUserIds.map((id) => extractedUserNameMap[id] ?? 'Ai đó'),
+    [typingUserIds, extractedUserNameMap],
   );
 
   return (
@@ -75,7 +101,6 @@ export function MessageInput({ channelId, channelName, userNameMap = {} }: Messa
           className="flex-grow border-none focus:ring-0 text-sm bg-transparent placeholder-zinc-400 outline-none"
           placeholder={placeholder}
           type="text"
-          disabled={isSending}
         />
 
         {/* Actions */}

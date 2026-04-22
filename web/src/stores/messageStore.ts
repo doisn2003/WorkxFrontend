@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { Message } from '@/types';
 import { messageService } from '@/services/messageService';
+import { useAuthStore } from '@/stores/authStore';
 
 interface MessageState {
   messagesByChannel: Record<string, Message[]>;
@@ -71,6 +72,7 @@ export const useMessageStore = create<MessageState>((set, get) => ({
 
   sendMessage: async (channelId, content, senderId) => {
     const tempId = `temp_${++tempIdCounter}`;
+    const user = useAuthStore.getState().user;
     const optimistic: Message = {
       id: -1,
       channel_id: channelId,
@@ -80,6 +82,9 @@ export const useMessageStore = create<MessageState>((set, get) => ({
       updated_at: new Date().toISOString(),
       _status: 'pending',
       _tempId: tempId,
+      sender_first_name: user?.first_name,
+      sender_family_name: user?.family_and_middle_name,
+      sender_avatar: user?.avatar_url,
     };
 
     // Add optimistically
@@ -93,13 +98,24 @@ export const useMessageStore = create<MessageState>((set, get) => ({
 
     try {
       const confirmedMsg = await messageService.sendMessage(channelId, content);
-      // Replace optimistic with confirmed
+      // Replace optimistic with confirmed, preserving optimistic sender info if missing
       set((state) => ({
         messagesByChannel: {
           ...state.messagesByChannel,
-          [channelId]: (state.messagesByChannel[channelId] ?? []).map((m) =>
-            m._tempId === tempId ? { ...confirmedMsg, _status: 'confirmed' as const } : m,
-          ),
+          [channelId]: (state.messagesByChannel[channelId] ?? []).map((m) => {
+            if (m._tempId === tempId) {
+              return {
+                ...m, // Keep optimistic fields
+                ...confirmedMsg, 
+                _status: 'confirmed' as const,
+                // Explicitly retain sender info if backend doesn't return it immediately
+                sender_first_name: confirmedMsg.sender_first_name ?? m.sender_first_name,
+                sender_family_name: confirmedMsg.sender_family_name ?? m.sender_family_name,
+                sender_avatar: confirmedMsg.sender_avatar ?? m.sender_avatar,
+              };
+            }
+            return m;
+          }),
         },
         isSending: false,
       }));

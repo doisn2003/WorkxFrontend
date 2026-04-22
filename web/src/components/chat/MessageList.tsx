@@ -30,12 +30,13 @@ export function MessageList({ channelId }: MessageListProps) {
   // Stable reference for messages length
   const messagesLength = messages.length;
 
-  // Auto-scroll to bottom when new messages arrive (not when loading older)
+  // Auto-scroll to bottom when new messages arrive or on initial load
   useEffect(() => {
     if (messagesLength > prevLengthRef.current) {
+      const isInitialLoad = prevLengthRef.current === 0 && messagesLength > 0;
       const isNewMessage = messagesLength - prevLengthRef.current <= 2;
-      if (isNewMessage) {
-        bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      if (isNewMessage || isInitialLoad) {
+        bottomRef.current?.scrollIntoView(isInitialLoad ? undefined : { behavior: 'smooth' });
       }
     }
     prevLengthRef.current = messagesLength;
@@ -100,7 +101,7 @@ export function MessageList({ channelId }: MessageListProps) {
   return (
     <div
       ref={containerRef}
-      className="flex-grow overflow-y-auto px-8 py-6 space-y-8 no-scrollbar"
+      className="flex-grow overflow-y-auto px-8 pt-6 pb-36 space-y-8 no-scrollbar"
     >
       {/* Top sentinel for infinite scroll */}
       <div ref={topSentinelRef} className="h-1" />
