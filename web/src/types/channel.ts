@@ -10,6 +10,7 @@ export interface Channel {
   created_at: string;
   // Computed / joined fields
   unread_count?: number;
+  max_other_read_id?: number;
   last_message?: {
     content: string;
     sender_name: string;

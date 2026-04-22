@@ -52,18 +52,17 @@ export const messageService = {
     await api.delete(`/channels/${channelId}/messages/${messageId}`);
   },
 
-  /** POST /api/channels/:channelId/messages/:id/read */
-  async markAsRead(channelId: string, messageId: number): Promise<void> {
-    await api.post(`/channels/${channelId}/messages/${messageId}/read`);
+  /** POST /api/messages/:id/read */
+  async markAsRead(messageId: number): Promise<void> {
+    await api.post(`/messages/${messageId}/read`);
   },
 
-  /** POST /api/channels/:channelId/messages/:id/reactions */
+  /** POST /api/messages/:id/reactions */
   async toggleReaction(
-    channelId: string,
     messageId: number,
     emoji: string,
   ): Promise<void> {
-    await api.post(`/channels/${channelId}/messages/${messageId}/reactions`, {
+    await api.post(`/messages/${messageId}/reactions`, {
       emoji,
     });
   },

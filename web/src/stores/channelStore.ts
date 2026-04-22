@@ -11,6 +11,7 @@ interface ChannelState {
   fetchChannels: () => Promise<void>;
   setActiveChannel: (id: string | null) => void;
   updateUnreadCount: (channelId: string, count: number) => void;
+  updateChannelMaxOtherReadId: (channelId: string, messageId: number) => void;
 
   // Derived selectors
   getProjectChannels: () => Channel[];
@@ -43,6 +44,19 @@ export const useChannelStore = create<ChannelState>((set, get) => ({
       channels: state.channels.map((ch) =>
         ch.id === channelId ? { ...ch, unread_count: count } : ch,
       ),
+    })),
+
+  updateChannelMaxOtherReadId: (channelId, messageId) =>
+    set((state) => ({
+      channels: state.channels.map((ch) => {
+        if (ch.id === channelId) {
+          const currentMax = ch.max_other_read_id || 0;
+          if (messageId > currentMax) {
+            return { ...ch, max_other_read_id: messageId };
+          }
+        }
+        return ch;
+      }),
     })),
 
   getProjectChannels: () => get().channels.filter((ch) => ch.type === 'PROJECT'),
