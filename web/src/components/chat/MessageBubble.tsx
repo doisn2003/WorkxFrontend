@@ -48,7 +48,7 @@ export function MessageBubble({ message, isSelf, onReactionToggle, hideHeader, i
           className="mt-1 flex-shrink-0"
         />
       ) : (
-        <div className="w-10 h-10 flex-shrink-0" />
+        <div className="w-10 flex-shrink-0" />
       )}
 
       {/* Content */}

@@ -127,7 +127,7 @@ export function MessageList({ channelId }: MessageListProps) {
           }
         }
         return (
-          <div key={msg._tempId ?? msg.id} className={index === 0 ? '' : (hideHeader ? 'mt-2' : 'mt-8')}>
+          <div key={msg._tempId ?? msg.id} className={index === 0 ? '' : (hideHeader ? 'mt-0.5' : 'mt-8')}>
             <MessageBubble
               message={msg}
               isSelf={msg.sender_id === currentUserId}
